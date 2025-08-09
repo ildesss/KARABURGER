@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منوی کارابرگر</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a1a1a; /* پس‌زمینه تیره */
+            color: #f5f5f5; /* رنگ متن */
+        }
+        .container {
+            max-width: 1024px;
+            margin: auto;
+            padding: 2rem;
+        }
+        .card {
+            background-color: #2c2c2c; /* رنگ کارت‌ها */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+        .section-title {
+            color: #ffb703; /* رنگ طلایی */
+        }
+        .price-tag {
+            font-weight: 700;
+            color: #ffb703;
+        }
+    </style>
+</head>
+<body class="selection:bg-[#ffb703] selection:text-black">
+    <div class="container">
+        <!-- Header Section -->
+        <header class="text-center mb-12">
+            <h1 class="text-6xl md:text-8xl font-bold section-title animate-pulse">کارابرگر</h1>
+            <p class="text-lg md:text-xl mt-4 text-gray-300">جایی که مزه‌ها رو دوباره کشف می‌کنی</p>
+            
+            <!-- Contact Information -->
+            <div class="mt-6 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-8 sm:space-x-reverse text-gray-300">
+                <a href="tel:021-12345678" class="flex items-center hover:text-white transition duration-300">
+                    <i class="fas fa-phone-alt ml-2"></i>
+                    <span>021-12345678</span>
+                </a>
+                <a href="https://www.instagram.com/karaburger_sari?igsh=MThudHZiYnJlaXQzdw==" target="_blank" class="flex items-center hover:text-white transition duration-300">
+                    <i class="fab fa-instagram ml-2"></i>
+                    <span>@karaburger_sari</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Menu Sections -->
+        <div class="space-y-16">
+
+            <!-- Burgers Section -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
+                    <i class="fas fa-hamburger text-3xl ml-3"></i>
+                    <span>برگرها</span>
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">برگر کلاسیک</h3>
+                            <span class="price-tag">۱۴۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">برگر دست‌ساز، کاهو و گوجه تازه، خیارشور و سس مخصوص روی نان برشته کنجدی.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">چیزبرگر</h3>
+                            <span class="price-tag">۱۶۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">برگر گوشت آبدار با پنیر چدار ذوب‌شده، کاهو و گوجه.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">برگر با پیاز کاراملی</h3>
+                            <span class="price-tag">۱۷۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">برگر با پیازهای شیرین کاراملی و پنیر سوئیسی.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">برگر قارچ و سس قارچ</h3>
+                            <span class="price-tag">۱۸۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">برگر با قارچ تفت‌داده‌شده و سس قارچ خامه‌ای.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">برگر با بیکن گوشت</h3>
+                            <span class="price-tag">۲۰۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">برگر گوشت، بیکن ترد، پنیر چدار و سس باربیکیو دودی.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">برگر با هالوپینو</h3>
+                            <span class="price-tag">۱۷۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">برای عاشقان تندی! برگر با هالوپینو، پنیر پپرجک و سس تند.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">برگر با پنیر هالومی</h3>
+                            <span class="price-tag">۱۸۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">گزینه گیاهی با پنیر هالومی کبابی، فلفل دلمه‌ای و سس مخصوص.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">برگر با پنیر آبی</h3>
+                            <span class="price-tag">۱۹۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">برگر مخصوص با پنیر آبی، پیاز داغ ترد و سس بالزامیک.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hot Dogs Section -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
+                    <i class="fas fa-hotdog text-3xl ml-3"></i>
+                    <span>هات‌داگ‌ها</span>
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">هات‌داگ کلاسیک</h3>
+                            <span class="price-tag">۱۱۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">هات‌داگ گوشت روی نان تازه، با سس خردل و کچاپ.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">هات‌داگ با پنیر</h3>
+                            <span class="price-tag">۱۳۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">هات‌داگ کلاسیک با پنیر چدار ذوب‌شده.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">هات‌داگ با قارچ</h3>
+                            <span class="price-tag">۱۴۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">هات‌داگ با قارچ تفت‌داده‌شده و پنیر سوئیسی.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">هات‌داگ با هالوپینو</h3>
+                            <span class="price-tag">۱۳۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">هات‌داگ با هالوپینو تند، پیاز و سس چیپوتل.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pasta Section -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
+                    <i class="fas fa-utensils text-3xl ml-3"></i>
+                    <span>پاستا</span>
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">پنه با سس آلفردو و مرغ</h3>
+                            <span class="price-tag">۲۱۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">پنه در سس آلفردو خامه‌ای، با مرغ گریل‌شده و پنیر پارمزان.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">پنه با سس پستو و مرغ</h3>
+                            <span class="price-tag">۲۲۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">پنه با مرغ گریل‌شده، گوجه خشک و سس پستو معطر.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">پنه با آلفردو و گوشت</h3>
+                            <span class="price-tag">۲۴۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">پنه در سس آلفردو خامه‌ای، با تکه‌های گوشت گوساله.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hot Sandwiches Section -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
+                    <i class="fas fa-sandwich text-3xl ml-3"></i>
+                    <span>ساندویچ‌های گرم</span>
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ مرغ گریل</h3>
+                            <span class="price-tag">۱۵۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">سینه مرغ گریل‌شده، سبزیجات تازه و سس مخصوص.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ مرغ با سس پستو</h3>
+                            <span class="price-tag">۱۷۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">سینه مرغ، پنیر موزارلا و سس پستو.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ مرغ با گردو و سیر</h3>
+                            <span class="price-tag">۱۹۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">ترکیبی خاص از مرغ، گردو، سیر و رب انار.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ مرغ با اسفناج و آلو</h3>
+                            <span class="price-tag">۱۸۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">مرغ با اسفناج و آلوی تفت‌داده‌شده.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ سبزیجات</h3>
+                            <span class="price-tag">۱۴۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">سبزیجات فصلی کبابی، پنیر بز و سس بالزامیک.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ مرغ با بادمجان</h3>
+                            <span class="price-tag">۱۶۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">مرغ گریل‌شده، بادمجان کبابی و پنیر موزارلا.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ بیف کلاسیک</h3>
+                            <span class="price-tag">۱۸۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">برش‌های نازک گوشت گوساله، پنیر پروولون و پیاز کاراملی.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ بیف با قارچ</h3>
+                            <span class="price-tag">۱۹۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">گوشت گوساله، قارچ تفت‌داده‌شده و پنیر سوئیسی.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cold Sandwiches Section -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
+                    <i class="fas fa-bread-slice text-3xl ml-3"></i>
+                    <span>ساندویچ‌های سرد</span>
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ بوقلمون</h3>
+                            <span class="price-tag">۱۳۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">بوقلمون دودی، پنیر سوئیسی، کاهو و گوجه.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ مرغ</h3>
+                            <span class="price-tag">۱۲۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">سالاد مرغ خامه‌ای با کرفس و سبزیجات معطر.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ساندویچ ژامبون گوشت</h3>
+                            <span class="price-tag">۱۴۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">ژامبون گوشت، پنیر چدار، کاهو و گوجه.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Salads Section -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
+                    <i class="fas fa-leaf text-3xl ml-3"></i>
+                    <span>سالادها</span>
+                </h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">سالاد سزار</h3>
+                            <span class="price-tag">۹۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">کاهو، نان تست، پنیر پارمزان و سس سزار مخصوص.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">سالاد لوبیا</h3>
+                            <span class="price-tag">۸۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">سالاد سه رنگ لوبیا، پیاز قرمز و سس لیمو و روغن زیتون.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Appetizers Section -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
+                    <i class="fas fa-french-fries text-3xl ml-3"></i>
+                    <span>پیش‌غذا</span>
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">سیب‌زمینی سرخ‌کرده ساده</h3>
+                            <span class="price-tag">۷۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">سیب‌زمینی‌های سرخ‌کرده و ترد.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">سیب‌زمینی با پنیر</h3>
+                            <span class="price-tag">۹۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">سیب‌زمینی سرخ‌کرده، غرق در سس پنیر چدار.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">سیب‌زمینی با قارچ</h3>
+                            <span class="price-tag">۹۵,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">سیب‌زمینی با قارچ تفت‌داده‌شده و پنیر پارمزان.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">بال مرغ</h3>
+                            <span class="price-tag">۱۲۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">بال مرغ ترد در سس مخصوص.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">ذرت سرخ‌شده</h3>
+                            <span class="price-tag">۸۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">ذرت مکزیکی شیرین، سرخ‌شده و برشته.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Sauces and Drinks Section -->
+            <section>
+                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
+                    <i class="fas fa-tint text-3xl ml-3"></i>
+                    <span>نوشیدنی و سس‌ها</span>
+                </h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">نوشیدنی‌ها</h3>
+                            <span class="price-tag">۲۵,۰۰۰ - ۵۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">لیموناد نعناع، آب پرتقال طبیعی، نوشابه و دلستر.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="text-xl font-semibold">سس‌ها (در کنار غذا)</h3>
+                            <span class="price-tag">۲۰,۰۰۰ تومان</span>
+                        </div>
+                        <p class="text-gray-400 text-sm">سس برگر، سس گیاهی بالزامیک، سس تارتار خانگی، سس رنچ، سس خردل و سس قارچ.</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+</body>
+</html>
