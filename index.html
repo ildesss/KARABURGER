@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منوی کارابرگر</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Font from Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -26,8 +23,9 @@
         .card {
             background-color: #2c2c2c; /* رنگ کارت‌ها */
             transition: transform 0.2s, box-shadow 0.2s;
+            position: relative; /* برای دکمه ویرایش */
         }
-        .card:hover {
+        .card:not(.editing):hover { /* فقط وقتی ویرایش فعال نیست */
             transform: translateY(-5px);
             box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
         }
@@ -38,20 +36,130 @@
             font-weight: 700;
             color: #ffb703;
         }
+        /* Admin specific styles */
+        .admin-edit-btn {
+            display: none;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: #ffb703;
+            color: #1a1a1a;
+            padding: 4px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            z-index: 10;
+        }
+        body.admin-mode .admin-edit-btn {
+            display: block;
+        }
     </style>
 </head>
 <body class="selection:bg-[#ffb703] selection:text-black">
+    
+    <a href="#" id="admin-login-btn" class="fixed top-4 left-4 text-gray-400 hover:text-[#ffb703] transition duration-300 z-50">
+        <i class="fas fa-user-shield text-2xl"></i>
+    </a>
+    
+    <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-sm" dir="rtl">
+            <h3 class="text-2xl font-bold mb-6 text-gray-900">ورود مدیر</h3>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="admin-password" class="block text-gray-700 text-sm font-bold mb-2">رمز عبور:</label>
+                    <input type="password" id="admin-password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit" class="bg-[#ffb703] hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+                        ورود
+                    </button>
+                    <button type="button" id="close-modal-btn" class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800">
+                        لغو
+                    </button>
+                </div>
+                <p id="login-error" class="text-red-500 text-xs italic mt-4 hidden">رمز عبور اشتباه است.</p>
+            </form>
+        </div>
+    </div>
+    
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md" dir="rtl">
+            <h3 class="text-2xl font-bold mb-6 text-gray-900">ویرایش آیتم</h3>
+            <form id="edit-form">
+                <input type="hidden" id="edit-item-section" required>
+                <input type="hidden" id="edit-item-index" required>
+                
+                <div class="mb-4">
+                    <label for="edit-item-name" class="block text-gray-700 text-sm font-bold mb-2">نام آیتم:</label>
+                    <input type="text" id="edit-item-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label for="edit-item-price" class="block text-gray-700 text-sm font-bold mb-2">قیمت (به تومان، بدون کاما):</label>
+                    <input type="text" id="edit-item-price" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label for="edit-item-description" class="block text-gray-700 text-sm font-bold mb-2">توضیحات:</label>
+                    <textarea id="edit-item-description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" rows="3" required></textarea>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-between mt-6 space-y-3 sm:space-y-0 sm:space-x-4 sm:space-x-reverse">
+                    <button type="submit" class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+                        ذخیره تغییرات
+                    </button>
+                    <button type="button" id="delete-item-btn" class="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+                        حذف آیتم
+                    </button>
+                    <button type="button" id="close-edit-modal-btn" class="w-full sm:w-auto inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800 mt-2 sm:mt-0">
+                        لغو
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="add-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md" dir="rtl">
+            <h3 class="text-2xl font-bold mb-6 text-gray-900">اضافه کردن آیتم جدید</h3>
+            <form id="add-form">
+                <div class="mb-4">
+                    <label for="add-item-section" class="block text-gray-700 text-sm font-bold mb-2">بخش (مثال: برگرها, هات‌داگ‌ها):</label>
+                    <input type="text" id="add-item-section" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" required placeholder="برگرها یا هات‌داگ‌ها">
+                </div>
+                <div class="mb-4">
+                    <label for="add-item-name" class="block text-gray-700 text-sm font-bold mb-2">نام آیتم:</label>
+                    <input type="text" id="add-item-name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label for="add-item-price" class="block text-gray-700 text-sm font-bold mb-2">قیمت (به تومان، بدون کاما):</label>
+                    <input type="text" id="add-item-price" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" required>
+                </div>
+                <div class="mb-4">
+                    <label for="add-item-description" class="block text-gray-700 text-sm font-bold mb-2">توضیحات:</label>
+                    <textarea id="add-item-description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline" rows="3" required></textarea>
+                </div>
+                
+                <div class="flex items-center justify-between mt-6">
+                    <button type="submit" class="bg-[#ffb703] hover:bg-yellow-600 text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+                        اضافه کردن آیتم
+                    </button>
+                    <button type="button" id="close-add-modal-btn" class="inline-block align-baseline font-bold text-sm text-gray-500 hover:text-gray-800">
+                        لغو
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
     <div class="container">
-        <!-- Header Section -->
         <header class="text-center mb-12">
             <h1 class="text-6xl md:text-8xl font-bold section-title animate-pulse">کارابرگر</h1>
             <p class="text-lg md:text-xl mt-4 text-gray-300">جایی که مزه‌ها رو دوباره کشف می‌کنی</p>
             
-            <!-- Contact Information -->
             <div class="mt-6 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-8 sm:space-x-reverse text-gray-300">
                 <a href="tel:021-12345678" class="flex items-center hover:text-white transition duration-300">
-                    <i class="fas fa-phone-alt ml-2"></i>
-                    <span>021-12345678</span>
+                   
+                
                 </a>
                 <a href="https://www.instagram.com/karaburger_sari?igsh=MThudHZiYnJlaXQzdw==" target="_blank" class="flex items-center hover:text-white transition duration-300">
                     <i class="fab fa-instagram ml-2"></i>
@@ -60,335 +168,290 @@
             </div>
         </header>
 
-        <!-- Menu Sections -->
-        <div class="space-y-16">
-
-            <!-- Burgers Section -->
-            <section>
-                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
-                    <i class="fas fa-hamburger text-3xl ml-3"></i>
-                    <span>برگرها</span>
-                </h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">برگر کلاسیک</h3>
-                            <span class="price-tag">۱۴۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">برگر دست‌ساز، کاهو و گوجه تازه، خیارشور و سس مخصوص روی نان برشته کنجدی.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">چیزبرگر</h3>
-                            <span class="price-tag">۱۶۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">برگر گوشت آبدار با پنیر چدار ذوب‌شده، کاهو و گوجه.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">برگر با پیاز کاراملی</h3>
-                            <span class="price-tag">۱۷۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">برگر با پیازهای شیرین کاراملی و پنیر سوئیسی.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">برگر قارچ و سس قارچ</h3>
-                            <span class="price-tag">۱۸۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">برگر با قارچ تفت‌داده‌شده و سس قارچ خامه‌ای.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">برگر با بیکن گوشت</h3>
-                            <span class="price-tag">۲۰۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">برگر گوشت، بیکن ترد، پنیر چدار و سس باربیکیو دودی.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">برگر با هالوپینو</h3>
-                            <span class="price-tag">۱۷۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">برای عاشقان تندی! برگر با هالوپینو، پنیر پپرجک و سس تند.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">برگر با پنیر هالومی</h3>
-                            <span class="price-tag">۱۸۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">گزینه گیاهی با پنیر هالومی کبابی، فلفل دلمه‌ای و سس مخصوص.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">برگر با پنیر آبی</h3>
-                            <span class="price-tag">۱۹۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">برگر مخصوص با پنیر آبی، پیاز داغ ترد و سس بالزامیک.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Hot Dogs Section -->
-            <section>
-                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
-                    <i class="fas fa-hotdog text-3xl ml-3"></i>
-                    <span>هات‌داگ‌ها</span>
-                </h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">هات‌داگ کلاسیک</h3>
-                            <span class="price-tag">۱۱۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">هات‌داگ گوشت روی نان تازه، با سس خردل و کچاپ.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">هات‌داگ با پنیر</h3>
-                            <span class="price-tag">۱۳۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">هات‌داگ کلاسیک با پنیر چدار ذوب‌شده.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">هات‌داگ با قارچ</h3>
-                            <span class="price-tag">۱۴۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">هات‌داگ با قارچ تفت‌داده‌شده و پنیر سوئیسی.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">هات‌داگ با هالوپینو</h3>
-                            <span class="price-tag">۱۳۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">هات‌داگ با هالوپینو تند، پیاز و سس چیپوتل.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Pasta Section -->
-            <section>
-                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
-                    <i class="fas fa-utensils text-3xl ml-3"></i>
-                    <span>پاستا</span>
-                </h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">پنه با سس آلفردو و مرغ</h3>
-                            <span class="price-tag">۲۱۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">پنه در سس آلفردو خامه‌ای، با مرغ گریل‌شده و پنیر پارمزان.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">پنه با سس پستو و مرغ</h3>
-                            <span class="price-tag">۲۲۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">پنه با مرغ گریل‌شده، گوجه خشک و سس پستو معطر.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">پنه با آلفردو و گوشت</h3>
-                            <span class="price-tag">۲۴۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">پنه در سس آلفردو خامه‌ای، با تکه‌های گوشت گوساله.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Hot Sandwiches Section -->
-            <section>
-                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
-                    <i class="fas fa-sandwich text-3xl ml-3"></i>
-                    <span>ساندویچ‌های گرم</span>
-                </h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ مرغ گریل</h3>
-                            <span class="price-tag">۱۵۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">سینه مرغ گریل‌شده، سبزیجات تازه و سس مخصوص.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ مرغ با سس پستو</h3>
-                            <span class="price-tag">۱۷۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">سینه مرغ، پنیر موزارلا و سس پستو.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ مرغ با گردو و سیر</h3>
-                            <span class="price-tag">۱۹۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">ترکیبی خاص از مرغ، گردو، سیر و رب انار.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ مرغ با اسفناج و آلو</h3>
-                            <span class="price-tag">۱۸۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">مرغ با اسفناج و آلوی تفت‌داده‌شده.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ سبزیجات</h3>
-                            <span class="price-tag">۱۴۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">سبزیجات فصلی کبابی، پنیر بز و سس بالزامیک.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ مرغ با بادمجان</h3>
-                            <span class="price-tag">۱۶۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">مرغ گریل‌شده، بادمجان کبابی و پنیر موزارلا.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ بیف کلاسیک</h3>
-                            <span class="price-tag">۱۸۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">برش‌های نازک گوشت گوساله، پنیر پروولون و پیاز کاراملی.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ بیف با قارچ</h3>
-                            <span class="price-tag">۱۹۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">گوشت گوساله، قارچ تفت‌داده‌شده و پنیر سوئیسی.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Cold Sandwiches Section -->
-            <section>
-                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
-                    <i class="fas fa-bread-slice text-3xl ml-3"></i>
-                    <span>ساندویچ‌های سرد</span>
-                </h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ بوقلمون</h3>
-                            <span class="price-tag">۱۳۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">بوقلمون دودی، پنیر سوئیسی، کاهو و گوجه.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ مرغ</h3>
-                            <span class="price-tag">۱۲۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">سالاد مرغ خامه‌ای با کرفس و سبزیجات معطر.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ساندویچ ژامبون گوشت</h3>
-                            <span class="price-tag">۱۴۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">ژامبون گوشت، پنیر چدار، کاهو و گوجه.</p>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Salads Section -->
-            <section>
-                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
-                    <i class="fas fa-leaf text-3xl ml-3"></i>
-                    <span>سالادها</span>
-                </h2>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">سالاد سزار</h3>
-                            <span class="price-tag">۹۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">کاهو، نان تست، پنیر پارمزان و سس سزار مخصوص.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">سالاد لوبیا</h3>
-                            <span class="price-tag">۸۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">سالاد سه رنگ لوبیا، پیاز قرمز و سس لیمو و روغن زیتون.</p>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Appetizers Section -->
-            <section>
-                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
-                    <i class="fas fa-french-fries text-3xl ml-3"></i>
-                    <span>پیش‌غذا</span>
-                </h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">سیب‌زمینی سرخ‌کرده ساده</h3>
-                            <span class="price-tag">۷۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">سیب‌زمینی‌های سرخ‌کرده و ترد.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">سیب‌زمینی با پنیر</h3>
-                            <span class="price-tag">۹۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">سیب‌زمینی سرخ‌کرده، غرق در سس پنیر چدار.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">سیب‌زمینی با قارچ</h3>
-                            <span class="price-tag">۹۵,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">سیب‌زمینی با قارچ تفت‌داده‌شده و پنیر پارمزان.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">بال مرغ</h3>
-                            <span class="price-tag">۱۲۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">بال مرغ ترد در سس مخصوص.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">ذرت سرخ‌شده</h3>
-                            <span class="price-tag">۸۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">ذرت مکزیکی شیرین، سرخ‌شده و برشته.</p>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- Sauces and Drinks Section -->
-            <section>
-                <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
-                    <i class="fas fa-tint text-3xl ml-3"></i>
-                    <span>نوشیدنی و سس‌ها</span>
-                </h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">نوشیدنی‌ها</h3>
-                            <span class="price-tag">۲۵,۰۰۰ - ۵۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">لیموناد نعناع، آب پرتقال طبیعی، نوشابه و دلستر.</p>
-                    </div>
-                    <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300">
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="text-xl font-semibold">سس‌ها (در کنار غذا)</h3>
-                            <span class="price-tag">۲۰,۰۰۰ تومان</span>
-                        </div>
-                        <p class="text-gray-400 text-sm">سس برگر، سس گیاهی بالزامیک، سس تارتار خانگی، سس رنچ، سس خردل و سس قارچ.</p>
-                    </div>
-                </div>
-            </section>
-
+        <div id="admin-bar" class="hidden bg-[#ffb703] p-4 mb-8 rounded-lg text-black font-bold flex justify-between items-center" dir="rtl">
+            <span class="text-lg">حالت مدیریت فعال است.</span>
+            <div class="flex space-x-4 space-x-reverse">
+                <button id="add-new-item-btn" class="bg-green-700 hover:bg-green-800 text-white py-1 px-3 rounded text-sm transition duration-300">
+                    <i class="fas fa-plus ml-1"></i> اضافه کردن آیتم
+                </button>
+                <button id="admin-logout-btn" class="bg-red-700 hover:bg-red-800 text-white py-1 px-3 rounded text-sm transition duration-300">
+                    <i class="fas fa-sign-out-alt ml-1"></i> خروج
+                </button>
+            </div>
         </div>
+
+        <div class="space-y-16" id="menu-sections-container">
+            </div>
     </div>
+    
+    <script>
+        // --- ۱. ساختار داده‌های منو ---
+        // این داده‌ها محتوای منو را ذخیره می‌کنند. اگر در localStorage داده‌ای نباشد، با این مقادیر پیش‌فرض شروع می‌شود.
+        let initialMenuData = {
+            "برگرها": [
+                { name: "برگر کلاسیک", price: "۱۴۵,۰۰۰", description: "برگر دست‌ساز، کاهو و گوجه تازه، خیارشور و سس مخصوص روی نان برشته کنجدی." },
+                { name: "چیزبرگر", price: "۱۶۰,۰۰۰", description: "برگر گوشت آبدار با پنیر چدار ذوب‌شده، کاهو و گوجه." },
+                { name: "برگر با پیاز کاراملی", price: "۱۷۰,۰۰۰", description: "برگر با پیازهای شیرین کاراملی و پنیر سوئیسی." },
+                { name: "برگر قارچ و سس قارچ", price: "۱۸۵,۰۰۰", description: "برگر با قارچ تفت‌داده‌شده و سس قارچ خامه‌ای." },
+                { name: "برگر با بیکن گوشت", price: "۲۰۰,۰۰۰", description: "برگر گوشت، بیکن ترد، پنیر چدار و سس باربیکیو دودی." },
+                { name: "برگر با هالوپینو", price: "۱۷۵,۰۰۰", description: "برای عاشقان تندی! برگر با هالوپینو، پنیر پپرجک و سس تند." },
+                { name: "برگر با پنیر هالومی", price: "۱۸۰,۰۰۰", description: "گزینه گیاهی با پنیر هالومی کبابی، فلفل دلمه‌ای و سس مخصوص." },
+                { name: "برگر با پنیر آبی", price: "۱۹۵,۰۰۰", description: "برگر مخصوص با پنیر آبی، پیاز داغ ترد و سس بالزامیک." }
+            ],
+            "هات‌داگ‌ها": [
+                { name: "هات‌داگ کلاسیک", price: "۱۱۰,۰۰۰", description: "هات‌داگ گوشت روی نان تازه، با سس خردل و کچاپ." },
+                { name: "هات‌داگ با پنیر", price: "۱۳۵,۰۰۰", description: "هات‌داگ کلاسیک با پنیر چدار ذوب‌شده." },
+                { name: "هات‌داگ با قارچ", price: "۱۴۰,۰۰۰", description: "هات‌داگ با قارچ تفت‌داده‌شده و پنیر سوئیسی." },
+                { name: "هات‌داگ با هالوپینو", price: "۱۳۰,۰۰۰", description: "هات‌داگ با هالوپینو تند، پیاز و سس چیپوتل." }
+            ],
+            "پاستا": [
+                { name: "پنه با سس آلفردو و مرغ", price: "۲۱۰,۰۰۰", description: "پنه در سس آلفردو خامه‌ای، با مرغ گریل‌شده و پنیر پارمزان." },
+                { name: "پنه با سس پستو و مرغ", price: "۲۲۰,۰۰۰", description: "پنه با مرغ گریل‌شده، گوجه خشک و سس پستو معطر." }
+            ],
+            "پیش‌غذا و ساید": [
+                { name: "سیب‌زمینی سرخ‌شده", price: "۵۰,۰۰۰", description: "سیب‌زمینی سرخ‌شده ترد و تازه." },
+                { name: "سیب‌زمینی با پنیر", price: "۸۰,۰۰۰", description: "سیب‌زمینی سرخ‌شده با سس پنیر چدار." },
+                { name: "سالاد سزار", price: "۱۲۰,۰۰۰", description: "کاهوی تازه، نان کروتان، سس سزار خانگی و مرغ گریل‌شده." }
+            ],
+            "نوشیدنی و سس‌ها": [
+                { name: "نوشیدنی‌ها", price: "۲۵,۰۰۰ - ۵۰,۰۰۰", description: "لیموناد نعناع، آب پرتقال طبیعی، نوشابه و دلستر." },
+                { name: "سس‌ها (در کنار غذا)", price: "۲۰,۰۰۰", description: "سس برگر، سس گیاهی بالزامیک، سس تارتار خانگی، سس رنچ،..." }
+            ]
+        };
+        
+        let menuData = {}; // داده‌های فعلی منو
+
+        // --- ۲. توابع کاربردی ---
+
+        // ذخیره داده‌ها در localStorage (شبیه‌سازی دیتابیس)
+        function saveMenuData() {
+            localStorage.setItem('karaburgerMenuData', JSON.stringify(menuData));
+        }
+
+        // بارگذاری داده‌ها از localStorage
+        function loadMenuData() {
+            const savedData = localStorage.getItem('karaburgerMenuData');
+            if (savedData) {
+                menuData = JSON.parse(savedData);
+            } else {
+                menuData = initialMenuData;
+                saveMenuData(); // ذخیره داده‌های پیش‌فرض برای اولین بار
+            }
+        }
+
+        // تابع اصلی برای رندر مجدد منو
+        function renderMenu() {
+            const container = document.getElementById('menu-sections-container');
+            container.innerHTML = ''; 
+
+            for (const sectionTitle in menuData) {
+                const sectionData = menuData[sectionTitle];
+                
+                // اگر بخش خالی است، آن را نمایش نده
+                if (sectionData.length === 0) continue;
+
+                // ایجاد بخش اصلی (Section)
+                const sectionEl = document.createElement('section');
+                
+                // انتخاب آیکون مناسب
+                let iconClass = 'fas fa-utensils';
+                if (sectionTitle.includes('برگر')) iconClass = 'fas fa-hamburger';
+                else if (sectionTitle.includes('هات‌داگ')) iconClass = 'fas fa-hotdog';
+                else if (sectionTitle.includes('ساید') || sectionTitle.includes('پیش‌غذا')) iconClass = 'fas fa-cheese';
+                else if (sectionTitle.includes('نوشیدنی') || sectionTitle.includes('سس')) iconClass = 'fas fa-tint';
+
+                sectionEl.innerHTML = `
+                    <h2 class="text-4xl font-bold mb-8 section-title flex items-center justify-center">
+                        <i class="${iconClass} text-3xl ml-3"></i>
+                        <span>${sectionTitle}</span>
+                    </h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="section-${sectionTitle.replace(/\s/g, '-')}">
+                        </div>
+                `;
+                container.appendChild(sectionEl);
+
+                const gridContainer = sectionEl.querySelector('.grid');
+
+                // ایجاد کارت‌های آیتم
+                sectionData.forEach((item, index) => {
+                    // اضافه کردن "تومان" به قیمت‌ها (اگر عدد باشند)
+                    const priceWithCurrency = isNaN(parseInt(item.price.replace(/,/g, ''))) ? item.price : `${item.price.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} تومان`;
+                    
+                    const cardHtml = `
+                        <div class="card p-6 rounded-xl shadow-lg transform hover:scale-105 duration-300 relative" 
+                             data-section="${sectionTitle}" data-index="${index}">
+                            
+                            <span class="admin-edit-btn" onclick="openEditModal('${sectionTitle}', ${index})">
+                                <i class="fas fa-edit ml-1"></i> ویرایش
+                            </span>
+
+                            <div class="flex justify-between items-center mb-2">
+                                <h3 class="text-xl font-semibold">${item.name}</h3>
+                                <span class="price-tag">${priceWithCurrency}</span>
+                            </div>
+                            <p class="text-gray-400 text-sm">${item.description}</p>
+                        </div>
+                    `;
+                    gridContainer.innerHTML += cardHtml;
+                });
+            }
+
+            // نمایش یا عدم نمایش نوار مدیریت
+            if (document.body.classList.contains('admin-mode')) {
+                document.getElementById('admin-bar').classList.remove('hidden');
+                document.getElementById('admin-bar').classList.add('flex');
+            } else {
+                document.getElementById('admin-bar').classList.remove('flex');
+                document.getElementById('admin-bar').classList.add('hidden');
+            }
+        }
+        
+        // --- ۳. منطق پنل مدیریت ---
+
+        const ADMIN_PASSWORD = "karaberger12345678"; // رمز عبور ثابت: ۱۰۰
+
+        // ورود
+        document.getElementById('admin-login-btn').addEventListener('click', () => {
+            document.getElementById('admin-modal').style.display = 'flex';
+        });
+
+        document.getElementById('close-modal-btn').addEventListener('click', () => {
+            document.getElementById('admin-modal').style.display = 'none';
+        });
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const password = document.getElementById('admin-password').value;
+            const errorEl = document.getElementById('login-error');
+
+            if (password === ADMIN_PASSWORD) {
+                // ورود موفق
+                document.body.classList.add('admin-mode');
+                document.getElementById('admin-modal').style.display = 'none';
+                document.getElementById('admin-password').value = ''; 
+                errorEl.classList.add('hidden');
+                renderMenu(); // رندر مجدد برای نمایش دکمه‌های ویرایش
+
+            } else {
+                // خطا
+                errorEl.classList.remove('hidden');
+            }
+        });
+
+        // خروج
+        document.getElementById('admin-logout-btn').addEventListener('click', () => {
+            document.body.classList.remove('admin-mode');
+            renderMenu(); // رندر مجدد برای پنهان کردن دکمه‌های ویرایش
+        });
+        
+        // مدال اضافه کردن آیتم (Add Item)
+        document.getElementById('add-new-item-btn').addEventListener('click', () => {
+            document.getElementById('add-modal').style.display = 'flex';
+        });
+
+        document.getElementById('close-add-modal-btn').addEventListener('click', () => {
+            document.getElementById('add-modal').style.display = 'none';
+            document.getElementById('add-form').reset();
+        });
+
+        document.getElementById('add-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const section = document.getElementById('add-item-section').value.trim();
+            const name = document.getElementById('add-item-name').value.trim();
+            const price = document.getElementById('add-item-price').value.trim();
+            const description = document.getElementById('add-item-description').value.trim();
+
+            if (!section || !name || !price || !description) return;
+
+            const newItem = { name, price, description };
+            
+            // اگر بخش جدید بود، آن را ایجاد کن
+            if (!menuData[section]) {
+                menuData[section] = [];
+            }
+            
+            menuData[section].push(newItem);
+
+            saveMenuData();
+            renderMenu();
+            document.getElementById('add-modal').style.display = 'none';
+            document.getElementById('add-form').reset();
+            alert(`آیتم "${name}" با موفقیت اضافه شد.`);
+        });
+
+        // مدال ویرایش آیتم (Edit Item) - باز کردن
+        window.openEditModal = (section, index) => {
+            const item = menuData[section][index];
+            if (!item) return;
+
+            document.getElementById('edit-item-section').value = section;
+            document.getElementById('edit-item-index').value = index;
+            document.getElementById('edit-item-name').value = item.name;
+            // حذف "تومان" و کاماها از قیمت برای ویرایش آسانتر
+            const priceWithoutCommas = item.price.replace(' تومان', '').replace(/,/g, ''); 
+            document.getElementById('edit-item-price').value = priceWithoutCommas;
+            document.getElementById('edit-item-description').value = item.description;
+
+            document.getElementById('edit-modal').style.display = 'flex';
+        };
+        
+        document.getElementById('close-edit-modal-btn').addEventListener('click', () => {
+            document.getElementById('edit-modal').style.display = 'none';
+        });
+
+        // مدال ویرایش آیتم - ذخیره تغییرات
+        document.getElementById('edit-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const section = document.getElementById('edit-item-section').value;
+            const index = parseInt(document.getElementById('edit-item-index').value);
+            
+            const itemToEdit = menuData[section][index];
+            
+            // به‌روزرسانی محتوا
+            itemToEdit.name = document.getElementById('edit-item-name').value.trim();
+            // اضافه کردن کاما برای نمایش بهتر قیمت در داده‌ها
+            const rawPrice = document.getElementById('edit-item-price').value.trim();
+            itemToEdit.price = rawPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            itemToEdit.description = document.getElementById('edit-item-description').value.trim();
+
+            saveMenuData();
+            renderMenu();
+            document.getElementById('edit-modal').style.display = 'none';
+            alert(`آیتم "${itemToEdit.name}" با موفقیت ویرایش شد.`);
+        });
+        
+        // مدال ویرایش آیتم - حذف آیتم
+        document.getElementById('delete-item-btn').addEventListener('click', () => {
+            if (!confirm("آیا از حذف این آیتم اطمینان دارید؟")) return;
+
+            const section = document.getElementById('edit-item-section').value;
+            const index = parseInt(document.getElementById('edit-item-index').value);
+            const itemName = menuData[section][index].name;
+            
+            // حذف آیتم از آرایه
+            menuData[section].splice(index, 1);
+            
+            // اگر بخشی خالی شد، آن بخش را حذف کن
+            if (menuData[section].length === 0) {
+                delete menuData[section];
+            }
+
+            saveMenuData();
+            renderMenu();
+            document.getElementById('edit-modal').style.display = 'none';
+            alert(`آیتم "${itemName}" با موفقیت حذف شد.`);
+        });
+
+
+        // --- ۴. راه‌اندازی اولیه ---
+        // بارگذاری و رندر اولیه منو هنگام بارگیری صفحه
+        window.onload = () => {
+            loadMenuData();
+            renderMenu();
+        };
+
+    </script>
 </body>
 </html>
